@@ -15,4 +15,5 @@ public interface TournamentInterface {
     TournamentDto edit(Long id, TournamentDto tournamentDto);
 
     void delete(Long id);
+
 }
