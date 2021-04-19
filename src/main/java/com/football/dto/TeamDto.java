@@ -3,8 +3,6 @@ package com.football.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
-import java.util.ArrayList;
-
 @Getter
 @Schema(description = "Сущность команды")
 public final class TeamDto {
