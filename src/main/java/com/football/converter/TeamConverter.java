@@ -19,7 +19,6 @@ public class TeamConverter {
 
     public Team dtoToEntity(TeamDto teamDto) {
         Team team = new Team();
-        //team.setId(teamDto.getId());
         team.setTeamName(teamDto.getTeamName());
         team.setCityName(teamDto.getCityName());
         return team;

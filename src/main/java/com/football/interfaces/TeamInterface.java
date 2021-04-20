@@ -1,6 +1,7 @@
 package com.football.interfaces;
 
 import com.football.dto.TeamDto;
+import com.football.response.ApiResponse;
 
 import java.util.List;
 
@@ -13,5 +14,5 @@ public interface TeamInterface {
 
     TeamDto edit(Long id, TeamDto teamDto);
 
-    void delete(Long id);
+    ApiResponse delete (Long id);
 }

@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Schema(description = "Сущность матча")
-public class MatchDto {
+public final class MatchDto {
     @Schema(description = "Идентификатор")
     private final Long id;
 

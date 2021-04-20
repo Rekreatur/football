@@ -8,14 +8,20 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class ApiError {
+public class ApiResponseException {
     private String message;
     private String debugMessage;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<String> errors;
 
-    public ApiError(String message, String debugMessage) {
+
+
+    public ApiResponseException() {
+    }
+
+    public ApiResponseException(String message, String debugMessage) {
         this.message = message;
         this.debugMessage = debugMessage;
     }
+
 }

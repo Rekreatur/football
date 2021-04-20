@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Schema(description = "Сущность турнира")
-public class TournamentDto {
+public final class TournamentDto {
     @Schema(description = "Идентификатор")
     private final Long id;
 

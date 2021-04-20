@@ -6,6 +6,7 @@ import com.football.domain.Team;
 import com.football.dto.TeamDto;
 import com.football.interfaces.TeamInterface;
 import com.football.repository.TeamRepository;
+import com.football.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +22,7 @@ public class TeamService implements TeamInterface {
     TeamRepository teamRepository;
 
     public List<TeamDto> findAll() {
-
         return teamConverter.entityToDto(teamRepository.findAll());
-
     }
 
     public TeamDto getOneTeam(Long id) {
@@ -41,7 +40,8 @@ public class TeamService implements TeamInterface {
         return teamConverter.entityToDto(teamRepository.saveAndFlush(team));
     }
 
-    public void delete(Long id) {
+    public ApiResponse delete(Long id) {
         teamRepository.delete(teamRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
+        return new ApiResponse("Delete successfully");
     }
 }

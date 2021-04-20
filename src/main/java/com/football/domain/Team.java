@@ -13,9 +13,9 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "teanName")
+    @Column(name = "team_name", nullable = false)
     private String teamName;
 
-    @Column(name = "cityName")
+    @Column(name = "city_name", nullable = false)
     private String cityName;
 }
