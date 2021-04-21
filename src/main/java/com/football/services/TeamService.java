@@ -8,6 +8,7 @@ import com.football.interfaces.TeamInterface;
 import com.football.repository.TeamRepository;
 import com.football.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -25,11 +26,11 @@ public class TeamService implements TeamInterface {
         return teamConverter.entityToDto(teamRepository.findAll());
     }
 
-    public TeamDto getOneTeam(Long id) {
+    public TeamDto getOne(Long id) {
         return teamConverter.entityToDto(teamRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 
-    public TeamDto addTeam(TeamDto teamDto) {
+    public TeamDto add(TeamDto teamDto) {
         Team team = teamConverter.dtoToEntity(teamDto);
         return teamConverter.entityToDto(teamRepository.saveAndFlush(team));
     }
@@ -42,6 +43,6 @@ public class TeamService implements TeamInterface {
 
     public ApiResponse delete(Long id) {
         teamRepository.delete(teamRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
-        return new ApiResponse("Delete successfully");
+        return new ApiResponse("Delete successfully", HttpStatus.OK);
     }
 }

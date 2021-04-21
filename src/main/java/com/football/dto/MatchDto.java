@@ -1,35 +1,44 @@
 package com.football.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
 @Schema(description = "Сущность матча")
 public final class MatchDto {
-    @Schema(description = "Идентификатор")
-    private final Long id;
 
-    @Schema(description = "Название команды хозяев")
-    private final String homeTeam;
+  @Schema(description = "Идентификатор")
+  private final Long id;
 
-    @Schema(description = "Название команды гостей")
-    private final String guestTeam;
+  @Schema(description = "Id команды хозяев")
+  @NotNull
+  private final Long homeTeamId;
 
-    @Schema(description = "Голы хозяев")
-    private final Long homeGoals;
+  @Schema(description = "Id команды гостей")
+  @NotNull
+  private final Long guestTeamId;
 
-    @Schema(description = "Голы гостей")
-    private final Long guestGoals;
+  @Min(value = 0)
+  @Schema(description = "Голы хозяев")
+  private final Integer homeGoals;
 
-    @Schema(description = "Название турнира")
-    private final String tournamentName;
+  @Min(value = 0)
+  @Schema(description = "Голы гостей")
+  private final Integer guestGoals;
 
-    public MatchDto(Long id, String homeTeam, String guestTeam, Long homeGoals, Long guestGoals, String tournamentName) {
-        this.id = id;
-        this.homeTeam = homeTeam;
-        this.guestTeam = guestTeam;
-        this.homeGoals = homeGoals;
-        this.guestGoals = guestGoals;
-        this.tournamentName = tournamentName;
-    }
+  @Schema(description = "Id турнира")
+  @NotNull
+  private final Long tournamentId;
+
+  public MatchDto(Long id, Long homeTeam, Long guestTeam, Integer homeGoals, Integer guestGoals,
+      Long tournamentName) {
+    this.id = id;
+    this.homeTeamId = homeTeam;
+    this.guestTeamId = guestTeam;
+    this.homeGoals = homeGoals;
+    this.guestGoals = guestGoals;
+    this.tournamentId = tournamentName;
+  }
 }

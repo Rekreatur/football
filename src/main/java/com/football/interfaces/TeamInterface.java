@@ -8,9 +8,9 @@ import java.util.List;
 public interface TeamInterface {
     List<TeamDto> findAll();
 
-    TeamDto getOneTeam(Long id);
+    TeamDto getOne(Long id);
 
-    TeamDto addTeam(TeamDto teamDto);
+    TeamDto add(TeamDto teamDto);
 
     TeamDto edit(Long id, TeamDto teamDto);
 

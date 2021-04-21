@@ -1,34 +1,42 @@
 package com.football.domain;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import lombok.Data;
 
-import javax.persistence.*;
-
 @Entity
-@Table
+@Table(name = "match")
 @Data
 public class Match {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
-    @Column(name = "homeTeam")
-    private String homeTeam;
+  @Id
+  @Column(name = "id")
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-    @Column(name = "guestTeam")
-    private String guestTeam;
+  @OneToOne
+  @JoinColumn(name = "home_Team_Id")
+  private Team homeTeamId;
 
-    @Column(name = "homeGoals")
-    private Long homeGoals;
+  @OneToOne
+  @JoinColumn(name = "guest_Team_Id")
+  private Team guestTeamId;
 
-    @Column(name = "guestGoals")
-    private Long guestGoals;
+  @Column(name = "home_Goals")
+  private Integer homeGoals;
 
-    @Column(name = "tournamentName")
-    private String tournamentName;
+  @Column(name = "guest_Goals")
+  private Integer guestGoals;
+
+  @OneToOne
+  @JoinColumn(name = "tournament_Id")
+  private Tournament tournamentId;
 
 
 }

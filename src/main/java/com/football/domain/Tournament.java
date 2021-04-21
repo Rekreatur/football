@@ -1,24 +1,26 @@
 package com.football.domain;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.Data;
 
-import javax.persistence.*;
-import javax.validation.constraints.Size;
-
 @Entity
-@Table
+@Table(name = "tournament")
 @Data
 public class Tournament {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
-    @Column(name = "tournamentName")
-    private String tournamentName;
+  @Id
+  @Column(name = "id")
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-    @Column(name = "year")
-    @Size(min = 4, max = 4)
-    private Integer year;
+  @Column(name = "tournament_Name", nullable = false)
+  private String tournamentName;
+
+  @Column(name = "year", nullable = false)
+  private Integer year;
 }
