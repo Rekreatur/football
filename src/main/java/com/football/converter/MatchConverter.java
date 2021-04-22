@@ -20,9 +20,9 @@ public class MatchConverter {
   TournamentRepository tournamentRepository;
 
   public MatchDto entityToDto(Match match) {
-    return new MatchDto(match.getId(), match.getHomeTeamId().getId(),
-        match.getGuestTeamId().getId(), match.getHomeGoals(), match.getGuestGoals(),
-        match.getTournamentId().getId());
+    return new MatchDto(match.getId(), match.getHomeTeam().getId(),
+        match.getGuestTeam().getId(), match.getHomeGoals(), match.getGuestGoals(),
+        match.getTournament().getId());
   }
 
   public List<MatchDto> entityToDto(List<Match> matches) {
@@ -31,14 +31,14 @@ public class MatchConverter {
 
   public Match dtoToEntity(MatchDto matchDto) {
     Match match = new Match();
-    match.setHomeTeamId(teamRepository.findById(matchDto.getHomeTeamId())
-        .orElseThrow(() -> new EntityNotFoundException(matchDto.getHomeTeamId().toString())));
-    match.setGuestTeamId(teamRepository.findById(matchDto.getGuestTeamId())
-        .orElseThrow(() -> new EntityNotFoundException(matchDto.getGuestTeamId().toString())));
+    match.setHomeTeam(teamRepository.findById(matchDto.getHomeTeam())
+        .orElseThrow(() -> new EntityNotFoundException(matchDto.getHomeTeam().toString())));
+    match.setGuestTeam(teamRepository.findById(matchDto.getGuestTeam())
+        .orElseThrow(() -> new EntityNotFoundException(matchDto.getGuestTeam().toString())));
     match.setHomeGoals(matchDto.getHomeGoals());
     match.setGuestGoals(matchDto.getGuestGoals());
-    match.setTournamentId(tournamentRepository.findById(matchDto.getTournamentId())
-        .orElseThrow(() -> new EntityNotFoundException(matchDto.getTournamentId().toString())));
+    match.setTournament(tournamentRepository.findById(matchDto.getTournament())
+        .orElseThrow(() -> new EntityNotFoundException(matchDto.getTournament().toString())));
     return match;
   }
 
@@ -47,14 +47,14 @@ public class MatchConverter {
   }
 
   public Match dtoToEntityEdit(Match match, MatchDto matchDto) {
-    match.setHomeTeamId(teamRepository.findById(matchDto.getHomeTeamId())
-        .orElseThrow(() -> new EntityNotFoundException(matchDto.getHomeTeamId().toString())));
-    match.setGuestTeamId(teamRepository.findById(matchDto.getGuestTeamId())
-        .orElseThrow(() -> new EntityNotFoundException(matchDto.getGuestTeamId().toString())));
+    match.setHomeTeam(teamRepository.findById(matchDto.getHomeTeam())
+        .orElseThrow(() -> new EntityNotFoundException(matchDto.getHomeTeam().toString())));
+    match.setGuestTeam(teamRepository.findById(matchDto.getGuestTeam())
+        .orElseThrow(() -> new EntityNotFoundException(matchDto.getGuestTeam().toString())));
     match.setHomeGoals(matchDto.getHomeGoals());
     match.setGuestGoals(matchDto.getGuestGoals());
-    match.setTournamentId(tournamentRepository.findById(matchDto.getTournamentId())
-        .orElseThrow(() -> new EntityNotFoundException(matchDto.getTournamentId().toString())));
+    match.setTournament(tournamentRepository.findById(matchDto.getTournament())
+        .orElseThrow(() -> new EntityNotFoundException(matchDto.getTournament().toString())));
     return match;
   }
 }

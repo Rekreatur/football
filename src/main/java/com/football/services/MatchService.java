@@ -6,7 +6,7 @@ import com.football.dto.MatchDto;
 import com.football.interfaces.MatchInterface;
 import com.football.repository.MatchRepository;
 import com.football.response.ApiResponse;
-import io.swagger.annotations.Api;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
@@ -30,7 +30,7 @@ public class MatchService implements MatchInterface {
 
   public List<MatchDto> finaAllTournament(Long id) {
     return matchConverter.entityToDto(
-        matchRepository.findAll().stream().filter(x -> x.getTournamentId().getId().equals(id))
+        matchRepository.findAll().stream().filter(x -> x.getTournament().getId().equals(id))
             .collect(
                 Collectors.toList()));
   }
@@ -38,7 +38,7 @@ public class MatchService implements MatchInterface {
 
   public List<MatchDto> findAllTeam(Long id) {
     return matchConverter.entityToDto(matchRepository.findAll().stream()
-        .filter(x -> x.getHomeTeamId().getId().equals(id) || x.getGuestTeamId().getId().equals(id))
+        .filter(x -> x.getHomeTeam().getId().equals(id) || x.getGuestTeam().getId().equals(id))
         .collect(
             Collectors.toList()));
   }
@@ -51,7 +51,7 @@ public class MatchService implements MatchInterface {
 
 
   public ApiResponse add(MatchDto matchDto) {
-    if (matchDto.getHomeTeamId().equals(matchDto.getGuestTeamId())) {
+    if (matchDto.getHomeTeam().equals(matchDto.getGuestTeam())) {
       return new ApiResponse("Команда не может играть сама с собой", HttpStatus.BAD_REQUEST);
     }
     Match match = matchConverter.dtoToEntity(matchDto);

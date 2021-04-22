@@ -21,12 +21,12 @@ public class Match {
   private Long id;
 
   @OneToOne
-  @JoinColumn(name = "home_Team_Id")
-  private Team homeTeamId;
+  @JoinColumn(name = "home_Team")
+  private Team homeTeam;
 
   @OneToOne
-  @JoinColumn(name = "guest_Team_Id")
-  private Team guestTeamId;
+  @JoinColumn(name = "guest_Team")
+  private Team guestTeam;
 
   @Column(name = "home_Goals")
   private Integer homeGoals;
@@ -35,8 +35,8 @@ public class Match {
   private Integer guestGoals;
 
   @OneToOne
-  @JoinColumn(name = "tournament_Id")
-  private Tournament tournamentId;
+  @JoinColumn(name = "tournament")
+  private Tournament tournament;
 
 
 }
