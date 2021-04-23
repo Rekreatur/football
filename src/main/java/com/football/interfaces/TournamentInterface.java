@@ -6,13 +6,13 @@ import com.football.response.ApiResponse;
 import java.util.List;
 
 public interface TournamentInterface {
-    List<TournamentDto> findAll();
+    ApiResponse<List<TournamentDto>> findAll();
 
-    TournamentDto getOne(Long id);
+    ApiResponse<TournamentDto> getOne(Long id);
 
-    TournamentDto add(TournamentDto tournamentDto);
+    ApiResponse add(TournamentDto tournamentDto);
 
-    TournamentDto edit(Long id, TournamentDto tournamentDto);
+    ApiResponse edit(Long id, TournamentDto tournamentDto);
 
     ApiResponse delete(Long id);
 }

@@ -1,11 +1,21 @@
 package com.football.response;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.Data;
 
-public class ApiResponse extends ResponseEntity {
+@Data
+public class ApiResponse<T> {
+    private String s;
+    private Status status;
+    private T t;
 
-    public ApiResponse(String message, HttpStatus httpStatus) {
-        super(message,httpStatus);
+    public ApiResponse(String s, Status status) {
+        this.s = s;
+        this.status = status;
+    }
+
+    public ApiResponse(String s, Status status, T t) {
+        this.s = s;
+        this.status = status;
+        this.t = t;
     }
 }
