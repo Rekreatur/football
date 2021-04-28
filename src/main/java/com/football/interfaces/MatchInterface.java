@@ -2,21 +2,22 @@ package com.football.interfaces;
 
 import com.football.dto.MatchDto;
 
+import com.football.exception.MatchException;
 import com.football.response.ApiResponse;
 import java.util.List;
 
 public interface MatchInterface {
-    ApiResponse<List<MatchDto>> findAll();
+    List<MatchDto> findAll();
 
-    ApiResponse<List<MatchDto>> finaAllTournament(Long id);
+    List<MatchDto> finaAllTournament(Long id);
 
-    ApiResponse<List<MatchDto>> findAllTeam(Long id);
+    List<MatchDto> findAllTeam(Long id);
 
-    ApiResponse<MatchDto> getOne(Long id);
+    MatchDto getOne(Long id);
 
-    ApiResponse add(MatchDto matchDto);
+    MatchDto add(MatchDto matchDto) throws MatchException;
 
-    ApiResponse edit(Long id, MatchDto matchDto);
+    MatchDto edit(Long id, MatchDto matchDto);
 
-    ApiResponse delete(Long id);
+    MatchDto delete(Long id);
 }

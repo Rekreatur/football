@@ -22,32 +22,31 @@ public class TournamentService implements TournamentInterface {
     TournamentRepository tournamentRepository;
 
 
-    public ApiResponse<List<TournamentDto>> findAll() {
-        return new ApiResponse<>("The list was issued successfully", Status.OK, tournamentConverter.entityToDto(tournamentRepository.findAll()));
+    public List<TournamentDto> findAll() {
+        return tournamentConverter.entityToDto(tournamentRepository.findAll());
     }
 
 
-    public ApiResponse<TournamentDto> getOne(Long id) {
-        return new ApiResponse<>("The tournament issued successfully", Status.OK, tournamentConverter.entityToDto(tournamentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString()))));
+    public TournamentDto getOne(Long id) {
+        return tournamentConverter.entityToDto(tournamentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 
 
-    public ApiResponse add(TournamentDto tournamentDto) {
-        tournamentConverter.entityToDto(tournamentRepository.saveAndFlush(tournamentConverter.dtoToEntity(tournamentDto)));
-        return new ApiResponse("The tournament added successfully", Status.OK);
+    public TournamentDto add(TournamentDto tournamentDto) {
+        return tournamentConverter.entityToDto(tournamentRepository.saveAndFlush(tournamentConverter.dtoToEntity(tournamentDto)));
     }
 
 
-    public ApiResponse edit(Long id, TournamentDto tournamentDto) {
+    public TournamentDto edit(Long id, TournamentDto tournamentDto) {
         Tournament tournament = tournamentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString()));
         tournamentConverter.dtoToEntityEdit(tournament, tournamentDto);
-        tournamentConverter.entityToDto(tournamentRepository.saveAndFlush(tournament));
-        return new ApiResponse("The tournament edited successfully", Status.OK);
+        return tournamentConverter.entityToDto(tournamentRepository.saveAndFlush(tournament));
     }
 
 
-    public ApiResponse delete(Long id) {
+    public TournamentDto delete(Long id) {
+        TournamentDto tournamentDto = tournamentConverter.entityToDto(tournamentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
         tournamentRepository.delete(tournamentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
-        return new ApiResponse("Delete successfully", Status.OK);
+        return tournamentDto;
     }
 }

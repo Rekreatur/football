@@ -1,5 +1,7 @@
 package com.football.exception;
 
+import com.football.domain.Match;
+import com.sun.org.apache.xerces.internal.util.HTTPInputSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,12 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class ExceptionHandler extends ResponseEntityExceptionHandler {
+
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(MatchException.class)
+    public ResponseEntity teamNotGame(MatchException ex) {
+        return new ResponseEntity(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 
     @org.springframework.web.bind.annotation.ExceptionHandler({EntityNotFoundException.class})
     public ResponseEntity handleEntityNotFoundEx(EntityNotFoundException e) {
@@ -60,5 +68,10 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
                                                            HttpStatus status, WebRequest request) {
         return new ResponseEntity(new ApiResponseException("No Handler Found", ex.getMessage()), status);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
+    protected ResponseEntity handleException(Exception ex, HttpStatus status) {
+        return new ResponseEntity(new ApiResponseException("Exception", ex.getMessage()), status);
     }
 }

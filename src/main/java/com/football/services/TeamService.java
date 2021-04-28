@@ -10,6 +10,7 @@ import com.football.response.ApiResponse;
 import com.football.response.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -22,29 +23,28 @@ public class TeamService implements TeamInterface {
     @Autowired
     TeamRepository teamRepository;
 
-    public ApiResponse<List<TeamDto>> findAll() {
-        return new ApiResponse<>("The list was issued successfully", Status.OK, teamConverter.entityToDto(teamRepository.findAll()));
+    public List<TeamDto> findAll() {
+        return teamConverter.entityToDto(teamRepository.findAll());
     }
 
-    public ApiResponse<TeamDto> getOne(Long id) {
-        return new ApiResponse<>("The team issued successfully",Status.OK, teamConverter.entityToDto(teamRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString()))));
+    public TeamDto getOne(Long id) {
+        return teamConverter.entityToDto(teamRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 
-    public ApiResponse add(TeamDto teamDto) {
-        teamConverter.entityToDto(teamRepository.saveAndFlush(teamConverter.dtoToEntity(teamDto)));
-        return new ApiResponse("The team added successfully", Status.OK);
+    public TeamDto add(TeamDto teamDto) {
+        return teamConverter.entityToDto(teamRepository.saveAndFlush(teamConverter.dtoToEntity(teamDto)));
     }
 
-    public ApiResponse edit(Long id, TeamDto teamDto) {
+    public TeamDto edit(Long id, TeamDto teamDto) {
         Team team = teamRepository.findById(id).orElseThrow(() -> new EntityNotFoundException((id.toString())));
         teamConverter.dtoToEntityEdit(team, teamDto);
-        teamConverter.entityToDto(teamRepository.saveAndFlush(team));
-        return new ApiResponse("The team edited successfully", Status.OK);
+        return teamConverter.entityToDto(teamRepository.saveAndFlush(team));
     }
 
-    public ApiResponse delete(Long id) {
+    public TeamDto delete(Long id) {
+        TeamDto teamDto = teamConverter.entityToDto(teamRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
         teamRepository.delete(teamRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
-        return new ApiResponse("Delete successfully", Status.OK);
+        return teamDto;
     }
 
 }
