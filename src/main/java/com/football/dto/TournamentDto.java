@@ -20,13 +20,13 @@ public final class TournamentDto {
     @Size(min = 2, max = 80)
     private final String tournamentName;
 
-    @ApiModelProperty(notes = "Год проведения турнира")
-    @Min(value = 2021)
-    private final Integer year;
+    @ApiModelProperty(notes = "Год начала проведения турнира")
+    @Min(value = 1900)
+    private final Integer startYear;
 
-    public TournamentDto(Long id, String tournamentName, Integer year) {
+    public TournamentDto(Long id, String tournamentName, Integer startYear) {
         this.id = id;
         this.tournamentName = tournamentName;
-        this.year = year;
+        this.startYear = startYear;
     }
 }

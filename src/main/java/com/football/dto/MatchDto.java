@@ -16,11 +16,11 @@ public final class MatchDto {
 
   @ApiModelProperty(notes = "Команда хозяев")
   @NotNull
-  private final Long homeTeam;
+  private final TeamDto homeTeam;
 
   @ApiModelProperty(notes = "Команда гостей")
   @NotNull
-  private final Long guestTeam;
+  private final TeamDto guestTeam;
 
   @ApiModelProperty(notes = "Количество голов команды хозяев")
   @Min(value = 0)
@@ -32,15 +32,14 @@ public final class MatchDto {
 
   @ApiModelProperty(notes = "Турнир")
   @NotNull
-  private final Long tournament;
+  private final TournamentDto tournament;
 
-  public MatchDto(Long id, Long homeTeam, Long guestTeam, Integer homeGoals, Integer guestGoals,
-      Long tournamentName) {
+  public MatchDto(Long id, @NotNull TeamDto homeTeam, @NotNull TeamDto guestTeam, @Min(value = 0) Integer homeGoals, @Min(value = 0) Integer guestGoals, @NotNull TournamentDto tournament) {
     this.id = id;
     this.homeTeam = homeTeam;
     this.guestTeam = guestTeam;
     this.homeGoals = homeGoals;
     this.guestGoals = guestGoals;
-    this.tournament = tournamentName;
+    this.tournament = tournament;
   }
 }

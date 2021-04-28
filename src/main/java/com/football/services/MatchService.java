@@ -54,7 +54,7 @@ public class MatchService implements MatchInterface {
 
 
   public ApiResponse add(MatchDto matchDto) {
-    if (matchDto.getHomeTeam().equals(matchDto.getGuestTeam())) {
+    if (matchDto.getHomeTeam().getId().equals(matchDto.getGuestTeam().getId())) {
       return new ApiResponse("Команда не может играть сама с собой", Status.ERROR);
     }
     Match match = matchConverter.dtoToEntity(matchDto);

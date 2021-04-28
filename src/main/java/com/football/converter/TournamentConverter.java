@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TournamentConverter {
   public TournamentDto entityToDto(Tournament tournament) {
-    return new TournamentDto(tournament.getId(), tournament.getTournamentName(), tournament.getYear());
+    return new TournamentDto(tournament.getId(), tournament.getTournamentName(), tournament.getStartYear());
   }
 
   public List<TournamentDto> entityToDto(List<Tournament> tournaments) {
@@ -18,8 +18,9 @@ public class TournamentConverter {
 
   public Tournament dtoToEntity(TournamentDto tournamentDto) {
     Tournament tournament = new Tournament();
+    tournament.setId(tournamentDto.getId());
     tournament.setTournamentName(tournamentDto.getTournamentName());
-    tournament.setYear(tournamentDto.getYear());
+    tournament.setStartYear(tournamentDto.getStartYear());
     return tournament;
   }
 
@@ -29,7 +30,7 @@ public class TournamentConverter {
 
   public Tournament dtoToEntityEdit(Tournament tournament, TournamentDto tournamentDto) {
     tournament.setTournamentName(tournamentDto.getTournamentName());
-    tournament.setYear(tournamentDto.getYear());
+    tournament.setStartYear(tournamentDto.getStartYear());
     return tournament;
   }
 
