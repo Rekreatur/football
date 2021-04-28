@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @ApiModel(description = "Сущность, содержащая информацию о команде")
@@ -19,11 +20,10 @@ public final class TeamDto {
     private final String teamName;
 
     @ApiModelProperty(notes = "Название города команды")
-    @NotBlank
-    @Size(min = 2, max = 80)
-    private final String cityName;
+    @NotNull
+    private final CityDto cityName;
 
-    public TeamDto(Long id, String teamName, String cityName) {
+    public TeamDto(Long id, @NotBlank @Size(min = 2, max = 80) String teamName, @NotNull CityDto cityName) {
         this.id = id;
         this.teamName = teamName;
         this.cityName = cityName;

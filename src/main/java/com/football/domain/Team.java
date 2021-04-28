@@ -21,7 +21,8 @@ public class Team {
     @Column(name = "team_name", nullable = false)
     private String teamName;
 
-    @Column(name = "city_name", nullable = false)
-    private String cityName;
+    @OneToOne
+    @JoinColumn(name = "city_name_id", nullable = false)
+    private City cityName;
 
 }
