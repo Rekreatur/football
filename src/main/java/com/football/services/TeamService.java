@@ -17,11 +17,16 @@ import java.util.List;
 
 @Service
 public class TeamService implements TeamInterface {
-    @Autowired
+    final
     TeamConverter teamConverter;
 
-    @Autowired
+    final
     TeamRepository teamRepository;
+
+    public TeamService(TeamConverter teamConverter, TeamRepository teamRepository) {
+        this.teamConverter = teamConverter;
+        this.teamRepository = teamRepository;
+    }
 
     public List<TeamDto> findAll() {
         return teamConverter.entityToDto(teamRepository.findAll());

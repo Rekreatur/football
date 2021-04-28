@@ -11,11 +11,16 @@ import java.util.stream.Collectors;
 @Service
 public class MatchConverter {
 
-    @Autowired
+    final
     TeamConverter teamConverter;
 
-    @Autowired
+    final
     TournamentConverter tournamentConverter;
+
+    public MatchConverter(TeamConverter teamConverter, TournamentConverter tournamentConverter) {
+        this.teamConverter = teamConverter;
+        this.tournamentConverter = tournamentConverter;
+    }
 
     public MatchDto entityToDto(Match match) {
         return new MatchDto(match.getId(), teamConverter.entityToDto(match.getHomeTeam()),

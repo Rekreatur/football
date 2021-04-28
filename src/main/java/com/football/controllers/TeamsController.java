@@ -21,11 +21,16 @@ import java.util.List;
 @Api(value = "/teams", description = "Контроллер, отвечающий за работу с футбольными командами")
 public class TeamsController {
 
-    @Autowired
+    final
     TeamInterface teamService;
 
-    @Autowired
+    final
     MatchInterface matchService;
+
+    public TeamsController(TeamInterface teamService, MatchInterface matchService) {
+        this.teamService = teamService;
+        this.matchService = matchService;
+    }
 
     @ApiOperation(value = "Выдача списка футбольных команд", notes = "Выдаёт список всех футбольных команд", response = ApiResponse.class)
     @ApiResponses(value = @io.swagger.annotations.ApiResponse(code = 200, message = "Выдача списка команд прошла успешно"))

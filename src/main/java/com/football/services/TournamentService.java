@@ -15,11 +15,16 @@ import java.util.List;
 
 @Service
 public class TournamentService implements TournamentInterface {
-    @Autowired
+    final
     TournamentConverter tournamentConverter;
 
-    @Autowired
+    final
     TournamentRepository tournamentRepository;
+
+    public TournamentService(TournamentConverter tournamentConverter, TournamentRepository tournamentRepository) {
+        this.tournamentConverter = tournamentConverter;
+        this.tournamentRepository = tournamentRepository;
+    }
 
 
     public List<TournamentDto> findAll() {

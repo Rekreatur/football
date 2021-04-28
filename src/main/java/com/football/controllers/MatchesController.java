@@ -20,8 +20,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/matches")
 @Api(value = "/matches", description = "Контроллер, отвечающий за работу с футбольными матчами")
 public class MatchesController {
-    @Autowired
+    final
     MatchInterface matchService;
+
+    public MatchesController(MatchInterface matchService) {
+        this.matchService = matchService;
+    }
 
     @ApiOperation(value = "Выдача списка матчей", notes = "Выдаёт список всех футбольных матчей", response = ApiResponse.class)
     @ApiResponses(value = @io.swagger.annotations.ApiResponse(code = 200, message = "Выдача списка футбольных матчей прошла успешно"))

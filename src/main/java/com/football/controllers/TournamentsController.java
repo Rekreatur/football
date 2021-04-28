@@ -20,10 +20,15 @@ import java.util.List;
 @RequestMapping(value = "/tournaments")
 @Api(value = "/tournaments", description = "Контроллер, отвечающий за работу с футбольными турнирами")
 public class TournamentsController {
-    @Autowired
+    final
     TournamentInterface tournamentService;
-    @Autowired
+    final
     MatchInterface matchService;
+
+    public TournamentsController(TournamentInterface tournamentService, MatchInterface matchService) {
+        this.tournamentService = tournamentService;
+        this.matchService = matchService;
+    }
 
     @ApiOperation(value = "Выдача списка футбольных турниров", notes = "Выдаёт список всех футбольных турниров", response = ApiResponse.class)
     @ApiResponses(value = @io.swagger.annotations.ApiResponse(code = 200, message = "Выдача списка турниров прошла успешно"))

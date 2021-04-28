@@ -6,9 +6,7 @@ import com.football.dto.MatchDto;
 import com.football.exception.MatchException;
 import com.football.interfaces.MatchInterface;
 import com.football.repository.MatchRepository;
-import com.football.response.ApiResponse;
-import com.football.response.Status;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.football.repository.TeamRepository;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -18,11 +16,20 @@ import java.util.stream.Collectors;
 @Service
 public class MatchService implements MatchInterface {
 
-    @Autowired
+    final
     MatchConverter matchConverter;
 
-    @Autowired
+    final
     MatchRepository matchRepository;
+
+    final
+    TeamRepository teamRepository;
+
+    public MatchService(MatchConverter matchConverter, MatchRepository matchRepository, TeamRepository teamRepository) {
+        this.matchConverter = matchConverter;
+        this.matchRepository = matchRepository;
+        this.teamRepository = teamRepository;
+    }
 
     public List<MatchDto> findAll() {
         return matchConverter.entityToDto(matchRepository.findAll());
@@ -38,6 +45,7 @@ public class MatchService implements MatchInterface {
 
 
     public List<MatchDto> findAllTeam(Long id) {
+        teamRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString()));
         return matchConverter.entityToDto(matchRepository.findAll().stream()
                 .filter(x -> x.getHomeTeam().getId().equals(id) || x.getGuestTeam().getId().equals(id))
                 .collect(
