@@ -9,8 +9,15 @@ import java.util.stream.Collectors;
 
 @Service
 public class TeamConverter {
+
+    final CityConverter cityConverter;
+
+    public TeamConverter(CityConverter cityConverter) {
+        this.cityConverter = cityConverter;
+    }
+
     public TeamDto entityToDto(Team team) {
-        return new TeamDto(team.getId(), team.getTeamName(), team.getCityName());
+        return new TeamDto(team.getId(), team.getTeamName(), cityConverter.entityToDto(team.getCityName()));
     }
 
     public List<TeamDto> entityToDto(List<Team> teams) {
@@ -19,8 +26,9 @@ public class TeamConverter {
 
     public Team dtoToEntity(TeamDto teamDto) {
         Team team = new Team();
+        team.setId(teamDto.getId());
         team.setTeamName(teamDto.getTeamName());
-        team.setCityName(teamDto.getCityName());
+        team.setCityName(cityConverter.dtoToEntity(teamDto.getCityName()));
         return team;
     }
 
@@ -30,7 +38,7 @@ public class TeamConverter {
 
     public Team dtoToEntityEdit(Team team, TeamDto teamDto) {
         team.setTeamName(teamDto.getTeamName());
-        team.setCityName(teamDto.getCityName());
+        team.setCityName(cityConverter.dtoToEntity(teamDto.getCityName()));
         return team;
     }
 

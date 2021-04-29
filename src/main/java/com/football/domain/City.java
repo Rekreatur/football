@@ -7,20 +7,18 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "tournament")
+@Table(name = "city")
 @Getter
 @Setter
 @EqualsAndHashCode
-public class Tournament {
+public class City {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "tournament_name", nullable = false)
-    private String tournamentName;
 
-    @Column(name = "start_year", nullable = false)
-    private Integer startYear;
+    @Column(name = "name")
+    String name;
 }

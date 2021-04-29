@@ -3,76 +3,108 @@ package com.football.services;
 import com.football.converter.MatchConverter;
 import com.football.domain.Match;
 import com.football.dto.MatchDto;
+import com.football.exception.MatchException;
 import com.football.interfaces.MatchInterface;
 import com.football.repository.MatchRepository;
-import com.football.response.ApiResponse;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.persistence.EntityNotFoundException;
-
-import com.football.response.Status;
-import io.swagger.annotations.Api;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import com.football.repository.TeamRepository;
+import com.football.repository.TournamentRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MatchService implements MatchInterface {
 
-  @Autowired
-  MatchConverter matchConverter;
+    final
+    MatchConverter matchConverter;
 
-  @Autowired
-  MatchRepository matchRepository;
+    final
+    MatchRepository matchRepository;
 
-  public ApiResponse<List<MatchDto>> findAll() {
-    return new ApiResponse<>("List of all matches successfully issued", Status.OK,matchConverter.entityToDto(matchRepository.findAll()));
-  }
+    final
+    TeamRepository teamRepository;
 
+    final
+    TournamentRepository tournamentRepository;
 
-  public ApiResponse<List<MatchDto>> finaAllTournament(Long id) {
-    return new ApiResponse<>("List of all tournament matches successfully issued", Status.OK,matchConverter.entityToDto(
-        matchRepository.findAll().stream().filter(x -> x.getTournament().getId().equals(id))
-            .collect(
-                Collectors.toList())));
-  }
-
-
-  public ApiResponse<List<MatchDto>> findAllTeam(Long id) {
-    return new ApiResponse<>("List of all team matches successfully issued", Status.OK,matchConverter.entityToDto(matchRepository.findAll().stream()
-        .filter(x -> x.getHomeTeam().getId().equals(id) || x.getGuestTeam().getId().equals(id))
-        .collect(
-            Collectors.toList())));
-  }
-
-
-  public ApiResponse<MatchDto> getOne(Long id) {
-    return new ApiResponse("Match successfully issued", Status.OK, matchConverter.entityToDto(
-            matchRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString()))));
-  }
-
-
-  public ApiResponse add(MatchDto matchDto) {
-    if (matchDto.getHomeTeam().equals(matchDto.getGuestTeam())) {
-      return new ApiResponse("Команда не может играть сама с собой", Status.ERROR);
+    public MatchService(MatchConverter matchConverter, MatchRepository matchRepository, TeamRepository teamRepository, TournamentRepository tournamentRepository) {
+        this.matchConverter = matchConverter;
+        this.matchRepository = matchRepository;
+        this.teamRepository = teamRepository;
+        this.tournamentRepository = tournamentRepository;
     }
-    Match match = matchConverter.dtoToEntity(matchDto);
-    matchConverter.entityToDto(matchRepository.saveAndFlush(match));
-    return new ApiResponse("Match added successfully", Status.OK);
-  }
+
+    public List<MatchDto> findAll() {
+        List<MatchDto> matchDtos = new ArrayList<>();
+        matchRepository.findAll().forEach(x -> matchDtos.add(matchConverter.entityToDto(x)));
+        return matchDtos;
+    }
 
 
-  public ApiResponse edit(Long id, MatchDto matchDto) {
-    Match match = matchRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString()));
-    matchConverter.dtoToEntityEdit(match, matchDto);
-    matchConverter.entityToDto(matchRepository.saveAndFlush(match));
-    return new ApiResponse("Match edited successfully", Status.OK);
-  }
+    public Optional<List<MatchDto>> findAllTournament(Long id) {
+        List<MatchDto> matchDtos = new ArrayList<>();
+        if (!tournamentRepository.findById(id).isPresent()) {
+            return Optional.empty();
+        }
+        matchRepository.findAll().forEach(x -> matchDtos.add(matchConverter.entityToDto(x)));
+        return Optional.of(matchDtos.stream()
+                .filter(x -> x.getId() != null)
+                .filter(x -> x.getTournament().getId().equals(id))
+                .collect(
+                        Collectors.toList()));
+    }
 
 
-  public ApiResponse<MatchDto> delete(Long id) {
-    matchRepository.delete(matchRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
-    return new ApiResponse<>("Delete successfully", Status.OK);
-  }
+    public Optional<List<MatchDto>> findAllTeam(Long id) {
+        List<MatchDto> matchDtos = new ArrayList<>();
+        if (!teamRepository.findById(id).isPresent()) {
+            return Optional.empty();
+        }
+        matchRepository.findAll().forEach(x -> matchDtos.add(matchConverter.entityToDto(x)));
+        return Optional.of(matchDtos.stream()
+                .filter(x -> x.getHomeTeam().getId() != null && x.getGuestTeam().getId() != null)
+                .filter(x -> x.getHomeTeam().getId().equals(id) || x.getGuestTeam().getId().equals(id))
+                .collect(
+                        Collectors.toList()));
+    }
+
+
+    public Optional<MatchDto> getOne(Long id) {
+        if (!matchRepository.findById(id).isPresent()) {
+            return Optional.empty();
+        }
+        return Optional.of(matchConverter.entityToDto(
+                matchRepository.findById(id).get()));
+    }
+
+
+    public MatchDto add(MatchDto matchDto) throws MatchException {
+        if (matchDto.getHomeTeam().getId().equals(matchDto.getGuestTeam().getId())) {
+            throw new MatchException("Команда не может играть сама с собой");
+        }
+        Match match = matchConverter.dtoToEntity(matchDto);
+        return matchConverter.entityToDto(matchRepository.save(match));
+    }
+
+
+    public Optional<MatchDto> edit(Long id, MatchDto matchDto) {
+        if (!matchRepository.findById(id).isPresent()) {
+            return Optional.empty();
+        }
+        matchConverter.dtoToEntityEdit(matchRepository.findById(id).get(), matchDto);
+        return Optional.of(matchConverter.entityToDto(matchRepository.save(matchRepository.findById(id).get())));
+    }
+
+
+    public Optional<MatchDto> delete(Long id) {
+        if (!matchRepository.findById(id).isPresent()) {
+            return Optional.empty();
+        }
+        MatchDto matchDto = matchConverter.entityToDto(matchRepository.findById(id).get());
+        matchRepository.delete(matchRepository.findById(id).get());
+        return Optional.of(matchDto);
+    }
 }

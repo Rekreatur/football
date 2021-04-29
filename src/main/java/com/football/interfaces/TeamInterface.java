@@ -1,18 +1,18 @@
 package com.football.interfaces;
 
 import com.football.dto.TeamDto;
-import com.football.response.ApiResponse;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TeamInterface {
-    ApiResponse<List<TeamDto>> findAll();
+    List<TeamDto> findAll();
 
-    ApiResponse<TeamDto> getOne(Long id);
+    Optional<TeamDto> getOne(Long id);
 
-    ApiResponse<TeamDto> add(TeamDto teamDto);
+    TeamDto add(TeamDto teamDto);
 
-    ApiResponse<TeamDto> edit(Long id, TeamDto teamDto);
+    Optional<TeamDto> edit(Long id, TeamDto teamDto);
 
-    ApiResponse delete (Long id);
+    Optional<TeamDto> delete(Long id);
 }
