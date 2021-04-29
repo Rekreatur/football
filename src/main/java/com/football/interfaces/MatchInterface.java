@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface MatchInterface {
     List<MatchDto> findAll();
 
-    Optional<List<MatchDto>> finaAllTournament(Long id);
+    Optional<List<MatchDto>> findAllTournament(Long id);
 
     Optional<List<MatchDto>> findAllTeam(Long id);
 

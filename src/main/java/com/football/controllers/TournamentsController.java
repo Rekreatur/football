@@ -10,7 +10,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
@@ -49,7 +48,7 @@ public class TournamentsController {
     @ApiResponses(value = @io.swagger.annotations.ApiResponse(code = 200, message = "Выдача списка матчей турнира прошла успешно"))
     @GetMapping(value = "/matches/{id}")
     public ApiResponse<List<MatchDto>> getAllMatchesTournament(@ApiParam(name = "tournament id", value = "id тунира, по которому нужно найти матчи")@PathVariable(name = "id") Long id) {
-        return new ApiResponse<>("List of all tournament matches successfully issued", Status.OK, matchService.finaAllTournament(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
+        return new ApiResponse<>("List of all tournament matches successfully issued", Status.OK, matchService.findAllTournament(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 
     @ApiOperation(value = "Добавление футбольного турнира", notes = "Добавляет новый футбольный турнир", response = ApiResponse.class)

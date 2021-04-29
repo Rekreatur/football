@@ -10,7 +10,6 @@ import com.football.repository.TeamRepository;
 import com.football.repository.TournamentRepository;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,25 +44,28 @@ public class MatchService implements MatchInterface {
     }
 
 
-    public Optional<List<MatchDto>> finaAllTournament(Long id) {
+    public Optional<List<MatchDto>> findAllTournament(Long id) {
         List<MatchDto> matchDtos = new ArrayList<>();
-        if(!tournamentRepository.findById(id).isPresent()) {
+        if (!tournamentRepository.findById(id).isPresent()) {
             return Optional.empty();
         }
         matchRepository.findAll().forEach(x -> matchDtos.add(matchConverter.entityToDto(x)));
-        return Optional.of(matchDtos.stream().filter(x -> x.getTournament().getId().equals(id))
-                        .collect(
-                                Collectors.toList()));
+        return Optional.of(matchDtos.stream()
+                .filter(x -> x.getId() != null)
+                .filter(x -> x.getTournament().getId().equals(id))
+                .collect(
+                        Collectors.toList()));
     }
 
 
     public Optional<List<MatchDto>> findAllTeam(Long id) {
         List<MatchDto> matchDtos = new ArrayList<>();
-        if(!teamRepository.findById(id).isPresent()) {
+        if (!teamRepository.findById(id).isPresent()) {
             return Optional.empty();
         }
         matchRepository.findAll().forEach(x -> matchDtos.add(matchConverter.entityToDto(x)));
         return Optional.of(matchDtos.stream()
+                .filter(x -> x.getHomeTeam().getId() != null && x.getGuestTeam().getId() != null)
                 .filter(x -> x.getHomeTeam().getId().equals(id) || x.getGuestTeam().getId().equals(id))
                 .collect(
                         Collectors.toList()));
@@ -71,7 +73,7 @@ public class MatchService implements MatchInterface {
 
 
     public Optional<MatchDto> getOne(Long id) {
-        if(!matchRepository.findById(id).isPresent()) {
+        if (!matchRepository.findById(id).isPresent()) {
             return Optional.empty();
         }
         return Optional.of(matchConverter.entityToDto(
@@ -89,7 +91,7 @@ public class MatchService implements MatchInterface {
 
 
     public Optional<MatchDto> edit(Long id, MatchDto matchDto) {
-        if(!matchRepository.findById(id).isPresent()) {
+        if (!matchRepository.findById(id).isPresent()) {
             return Optional.empty();
         }
         matchConverter.dtoToEntityEdit(matchRepository.findById(id).get(), matchDto);
@@ -98,7 +100,7 @@ public class MatchService implements MatchInterface {
 
 
     public Optional<MatchDto> delete(Long id) {
-        if(!matchRepository.findById(id).isPresent()) {
+        if (!matchRepository.findById(id).isPresent()) {
             return Optional.empty();
         }
         MatchDto matchDto = matchConverter.entityToDto(matchRepository.findById(id).get());
