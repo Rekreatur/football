@@ -7,10 +7,13 @@ import com.football.exception.MatchException;
 import com.football.interfaces.MatchInterface;
 import com.football.repository.MatchRepository;
 import com.football.repository.TeamRepository;
+import com.football.repository.TournamentRepository;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,37 +28,54 @@ public class MatchService implements MatchInterface {
     final
     TeamRepository teamRepository;
 
-    public MatchService(MatchConverter matchConverter, MatchRepository matchRepository, TeamRepository teamRepository) {
+    final
+    TournamentRepository tournamentRepository;
+
+    public MatchService(MatchConverter matchConverter, MatchRepository matchRepository, TeamRepository teamRepository, TournamentRepository tournamentRepository) {
         this.matchConverter = matchConverter;
         this.matchRepository = matchRepository;
         this.teamRepository = teamRepository;
+        this.tournamentRepository = tournamentRepository;
     }
 
     public List<MatchDto> findAll() {
-        return matchConverter.entityToDto(matchRepository.findAll());
+        List<MatchDto> matchDtos = new ArrayList<>();
+        matchRepository.findAll().forEach(x -> matchDtos.add(matchConverter.entityToDto(x)));
+        return matchDtos;
     }
 
 
-    public List<MatchDto> finaAllTournament(Long id) {
-        return matchConverter.entityToDto(
-                matchRepository.findAll().stream().filter(x -> x.getTournament().getId().equals(id))
+    public Optional<List<MatchDto>> finaAllTournament(Long id) {
+        List<MatchDto> matchDtos = new ArrayList<>();
+        if(!tournamentRepository.findById(id).isPresent()) {
+            return Optional.empty();
+        }
+        matchRepository.findAll().forEach(x -> matchDtos.add(matchConverter.entityToDto(x)));
+        return Optional.of(matchDtos.stream().filter(x -> x.getTournament().getId().equals(id))
                         .collect(
                                 Collectors.toList()));
     }
 
 
-    public List<MatchDto> findAllTeam(Long id) {
-        teamRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString()));
-        return matchConverter.entityToDto(matchRepository.findAll().stream()
+    public Optional<List<MatchDto>> findAllTeam(Long id) {
+        List<MatchDto> matchDtos = new ArrayList<>();
+        if(!teamRepository.findById(id).isPresent()) {
+            return Optional.empty();
+        }
+        matchRepository.findAll().forEach(x -> matchDtos.add(matchConverter.entityToDto(x)));
+        return Optional.of(matchDtos.stream()
                 .filter(x -> x.getHomeTeam().getId().equals(id) || x.getGuestTeam().getId().equals(id))
                 .collect(
                         Collectors.toList()));
     }
 
 
-    public MatchDto getOne(Long id) {
-        return matchConverter.entityToDto(
-                matchRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
+    public Optional<MatchDto> getOne(Long id) {
+        if(!matchRepository.findById(id).isPresent()) {
+            return Optional.empty();
+        }
+        return Optional.of(matchConverter.entityToDto(
+                matchRepository.findById(id).get()));
     }
 
 
@@ -64,20 +84,25 @@ public class MatchService implements MatchInterface {
             throw new MatchException("Команда не может играть сама с собой");
         }
         Match match = matchConverter.dtoToEntity(matchDto);
-        return matchConverter.entityToDto(matchRepository.saveAndFlush(match));
+        return matchConverter.entityToDto(matchRepository.save(match));
     }
 
 
-    public MatchDto edit(Long id, MatchDto matchDto) {
-        Match match = matchRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString()));
-        matchConverter.dtoToEntityEdit(match, matchDto);
-        return matchConverter.entityToDto(matchRepository.saveAndFlush(match));
+    public Optional<MatchDto> edit(Long id, MatchDto matchDto) {
+        if(!matchRepository.findById(id).isPresent()) {
+            return Optional.empty();
+        }
+        matchConverter.dtoToEntityEdit(matchRepository.findById(id).get(), matchDto);
+        return Optional.of(matchConverter.entityToDto(matchRepository.save(matchRepository.findById(id).get())));
     }
 
 
-    public MatchDto delete(Long id) {
-        MatchDto matchDto = matchConverter.entityToDto(matchRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
-        matchRepository.delete(matchRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
-        return matchDto;
+    public Optional<MatchDto> delete(Long id) {
+        if(!matchRepository.findById(id).isPresent()) {
+            return Optional.empty();
+        }
+        MatchDto matchDto = matchConverter.entityToDto(matchRepository.findById(id).get());
+        matchRepository.delete(matchRepository.findById(id).get());
+        return Optional.of(matchDto);
     }
 }

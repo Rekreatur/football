@@ -13,14 +13,14 @@ import javax.persistence.*;
 @EqualsAndHashCode
 public class Tournament {
 
-  @Id
-  @Column(name = "id")
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-  @Column(name = "tournament_Name", nullable = false)
-  private String tournamentName;
+    @Column(name = "tournament_name", nullable = false)
+    private String tournamentName;
 
-  @Column(name = "start_year", nullable = false)
-  private Integer startYear;
+    @Column(name = "start_year", nullable = false)
+    private Integer startYear;
 }

@@ -6,14 +6,12 @@ import com.football.domain.Team;
 import com.football.dto.TeamDto;
 import com.football.interfaces.TeamInterface;
 import com.football.repository.TeamRepository;
-import com.football.response.ApiResponse;
-import com.football.response.Status;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TeamService implements TeamInterface {
@@ -29,27 +27,37 @@ public class TeamService implements TeamInterface {
     }
 
     public List<TeamDto> findAll() {
-        return teamConverter.entityToDto(teamRepository.findAll());
+        List<TeamDto> teamDtos = new ArrayList<>();
+        teamRepository.findAll().forEach(x -> teamDtos.add(teamConverter.entityToDto(x)));
+        return teamDtos;
     }
 
-    public TeamDto getOne(Long id) {
-        return teamConverter.entityToDto(teamRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
+    public Optional<TeamDto> getOne(Long id) {
+        if(!teamRepository.findById(id).isPresent()) {
+            return Optional.empty();
+        }
+        return Optional.of(teamConverter.entityToDto(teamRepository.findById(id).get()));
     }
 
     public TeamDto add(TeamDto teamDto) {
-        return teamConverter.entityToDto(teamRepository.saveAndFlush(teamConverter.dtoToEntity(teamDto)));
+        return teamConverter.entityToDto(teamRepository.save(teamConverter.dtoToEntity(teamDto)));
     }
 
-    public TeamDto edit(Long id, TeamDto teamDto) {
-        Team team = teamRepository.findById(id).orElseThrow(() -> new EntityNotFoundException((id.toString())));
-        teamConverter.dtoToEntityEdit(team, teamDto);
-        return teamConverter.entityToDto(teamRepository.saveAndFlush(team));
+    public Optional<TeamDto> edit(Long id, TeamDto teamDto) {
+        if(!teamRepository.findById(id).isPresent()) {
+            return Optional.empty();
+        }
+        teamConverter.dtoToEntityEdit(teamRepository.findById(id).get(), teamDto);
+        return Optional.of(teamConverter.entityToDto(teamRepository.save(teamRepository.findById(id).get())));
     }
 
-    public TeamDto delete(Long id) {
-        TeamDto teamDto = teamConverter.entityToDto(teamRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
-        teamRepository.delete(teamRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
-        return teamDto;
+    public Optional<TeamDto> delete(Long id) {
+        if(!teamRepository.findById(id).isPresent()) {
+            return Optional.empty();
+        }
+        TeamDto teamDto = teamConverter.entityToDto(teamRepository.findById(id).get());
+        teamRepository.delete(teamRepository.findById(id).get());
+        return Optional.of(teamDto);
     }
 
 }

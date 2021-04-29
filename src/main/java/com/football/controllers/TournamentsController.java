@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -41,14 +42,14 @@ public class TournamentsController {
     @ApiResponses(value = @io.swagger.annotations.ApiResponse(code = 200, message = "Выдача турнира по его id прошла успешно"))
     @GetMapping(value = "/getone/{id}")
     public ApiResponse<TournamentDto> getOne(@ApiParam(name = "tournament id", value = "id турнира, который необходимо найти") @PathVariable(name = "id") Long id) {
-        return new ApiResponse<>("The tournament issued successfully", Status.OK, tournamentService.getOne(id));
+        return new ApiResponse<>("The tournament issued successfully", Status.OK, tournamentService.getOne(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 
     @ApiOperation(value = "Выдача списка матчей турнира", notes = "Выдаёт список всех матчей турнира по указанному id", response = ApiResponse.class)
     @ApiResponses(value = @io.swagger.annotations.ApiResponse(code = 200, message = "Выдача списка матчей турнира прошла успешно"))
     @GetMapping(value = "/matches/{id}")
     public ApiResponse<List<MatchDto>> getAllMatchesTournament(@ApiParam(name = "tournament id", value = "id тунира, по которому нужно найти матчи")@PathVariable(name = "id") Long id) {
-        return new ApiResponse<>("List of all tournament matches successfully issued", Status.OK, matchService.finaAllTournament(id));
+        return new ApiResponse<>("List of all tournament matches successfully issued", Status.OK, matchService.finaAllTournament(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 
     @ApiOperation(value = "Добавление футбольного турнира", notes = "Добавляет новый футбольный турнир", response = ApiResponse.class)
@@ -63,13 +64,13 @@ public class TournamentsController {
     @PutMapping(value = "/{id}")
     public ApiResponse<TournamentDto> editTournament(@ApiParam(name = "tournament id", value = "id турнира, который необходимо изменить") @PathVariable(name = "id") Long id,
                                       @ApiParam(name = "Tournament Entity", value = "Информация о турнире, которую необходимо внести в изменения") @RequestBody @Valid TournamentDto tournamentDto) {
-        return new ApiResponse<>("The tournament edited successfully", Status.OK,tournamentService.edit(id, tournamentDto));
+        return new ApiResponse<>("The tournament edited successfully", Status.OK,tournamentService.edit(id, tournamentDto).orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 
     @ApiOperation(value = "Удаление турнира", notes = "Удаляет турнир по указанному id", response = ApiResponse.class)
     @ApiResponses(value = @io.swagger.annotations.ApiResponse(code = 200, message = "Удаление турнира прошло успешно"))
     @DeleteMapping(value = "/{id}")
     public ApiResponse<TournamentDto> deleteTournament(@ApiParam(name = "tournament id", value = "id турнира, который необходимо удалить") @PathVariable(name = "id") Long id) {
-        return new ApiResponse("Delete successfully", Status.OK,tournamentService.delete(id));
+        return new ApiResponse("Delete successfully", Status.OK,tournamentService.delete(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 }

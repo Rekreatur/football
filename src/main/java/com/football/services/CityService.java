@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CityService implements CityInterface {
@@ -23,26 +25,36 @@ public class CityService implements CityInterface {
     }
 
     public List<CityDto> findAll() {
-        return cityConverter.entityToDto(cityRepository.findAll());
+        List<CityDto> cityDtos = new ArrayList<>();
+        cityRepository.findAll().forEach(x -> cityDtos.add(cityConverter.entityToDto(x)));
+        return cityDtos;
     }
 
-    public CityDto getOne(Long id) {
-        return cityConverter.entityToDto(cityRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
+    public Optional<CityDto> getOne(Long id) {
+        if(!cityRepository.findById(id).isPresent()) {
+            return Optional.empty();
+        }
+        return Optional.of(cityConverter.entityToDto(cityRepository.findById(id).get()));
     }
 
     public CityDto add(CityDto cityDto) {
-        return cityConverter.entityToDto(cityRepository.saveAndFlush(cityConverter.dtoToEntity(cityDto)));
+        return cityConverter.entityToDto(cityRepository.save(cityConverter.dtoToEntity(cityDto)));
     }
 
-    public CityDto edit(Long id, CityDto cityDto) {
-        City city = cityRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString()));
-        cityConverter.dtoToEntityEdit(city,cityDto);
-        return cityConverter.entityToDto(cityRepository.saveAndFlush(city));
+    public Optional<CityDto> edit(Long id, CityDto cityDto) {
+        if(!cityRepository.findById(id).isPresent()) {
+            return Optional.empty();
+        }
+        cityConverter.dtoToEntityEdit(cityRepository.findById(id).get(),cityDto);
+        return Optional.of(cityConverter.entityToDto(cityRepository.save(cityRepository.findById(id).get())));
     }
 
-    public CityDto delete(Long id) {
-        CityDto cityDto = cityConverter.entityToDto(cityRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
-        cityRepository.delete(cityRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
-        return cityDto;
+    public Optional<CityDto> delete(Long id) {
+        if(!cityRepository.findById(id).isPresent()) {
+            return Optional.empty();
+        }
+        CityDto cityDto = cityConverter.entityToDto(cityRepository.findById(id).get());
+        cityRepository.delete(cityRepository.findById(id).get());
+        return Optional.of(cityDto);
     }
 }

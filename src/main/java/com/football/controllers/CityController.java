@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class CityController {
     @ApiResponses(value = @io.swagger.annotations.ApiResponse(code = 200, message = "Выдача города по id прошла успешно"))
     @GetMapping(value = "/getone/{id}")
     public ApiResponse<CityDto> getOne(@ApiParam(name = "city id", value = "id города, которую необходимо найти") @PathVariable(name = "id") Long id) {
-        return new ApiResponse<>("The city issued successfully", Status.OK, cityService.getOne(id));
+        return new ApiResponse<>("The city issued successfully", Status.OK, cityService.getOne(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 
     @ApiOperation(value = "Добавление города", notes = "Добавляет новый город", response = ApiResponse.class)
@@ -49,14 +50,14 @@ public class CityController {
     @PutMapping(value = "/{id}")
     public ApiResponse<CityDto> edit(@ApiParam(name = "city id", value = "id города, который необходимо изменить") @PathVariable(name = "id") Long id,
                                      @ApiParam(name = "City Entity", value = "Информация о городе, которую необходимо внести в изменения") @RequestBody @Valid CityDto cityDto) {
-        return new ApiResponse<>("The city edited successfully", Status.OK, cityService.edit(id, cityDto));
+        return new ApiResponse<>("The city edited successfully", Status.OK, cityService.edit(id, cityDto).orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 
     @ApiOperation(value = "Удаление города", notes = "Удаляет город по указанному id", response = ApiResponse.class)
     @ApiResponses(value = @io.swagger.annotations.ApiResponse(code = 200, message = "Удаление города прошло успешно"))
     @DeleteMapping(value = "/{id}")
     public ApiResponse<CityDto> delete(@ApiParam(name = "city id", value = "id города, который необходимо удалить") @PathVariable(name = "id") Long id) {
-        return new ApiResponse<>("Delete successfully", Status.OK, cityService.delete(id));
+        return new ApiResponse<>("Delete successfully", Status.OK, cityService.delete(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 
 }

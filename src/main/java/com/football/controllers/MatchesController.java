@@ -5,6 +5,7 @@ import com.football.exception.MatchException;
 import com.football.interfaces.MatchInterface;
 import com.football.response.ApiResponse;
 import java.util.List;
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 import com.football.response.Status;
@@ -38,7 +39,7 @@ public class MatchesController {
     @ApiResponses(value = @io.swagger.annotations.ApiResponse(code = 200, message = "Выдача матча по его id прошла успешно"))
     @GetMapping(value = "/getone/{id}")
     public ApiResponse<MatchDto> getOneMatch(@ApiParam(name = "match id", value = "id матча, который необходимо найти") @PathVariable(name = "id") Long id) {
-        return new ApiResponse("Match successfully issued", Status.OK, matchService.getOne(id));
+        return new ApiResponse<>("Match successfully issued", Status.OK, matchService.getOne(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 
     @ApiOperation(value = "Добавление футбольного матча", notes = "Добавляет новый футбольный матч", response = ApiResponse.class)
@@ -53,13 +54,13 @@ public class MatchesController {
     @PutMapping(value = "/{id}")
     public ApiResponse<MatchDto> editMatch(@ApiParam(name = "match id", value = "id матча, который необходимо изменить")@PathVariable(name = "id") Long id,
                                  @ApiParam(name = "Match Entity", value = "Информация о матче, которую необхожимо внести в изменения")@RequestBody @Valid MatchDto matchDto) {
-        return new ApiResponse("Match edited successfully", Status.OK, matchService.edit(id, matchDto));
+        return new ApiResponse<>("Match edited successfully", Status.OK, matchService.edit(id, matchDto).orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 
     @ApiOperation(value = "Удаление футбольного матча", notes = "Удаляет футбольный матч по указанному id", response = ApiResponse.class)
     @ApiResponses(value = @io.swagger.annotations.ApiResponse(code = 200, message = "Удаление матча прошло успешно"))
     @DeleteMapping(value = "/{id}")
     public ApiResponse<MatchDto> deleteMatch(@ApiParam(name = "match id", value = "id матча, который необходимо удалить")@PathVariable(name = "id") Long id) {
-        return new ApiResponse<>("Delete successfully", Status.OK, matchService.delete(id));
+        return new ApiResponse<>("Delete successfully", Status.OK, matchService.delete(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 }

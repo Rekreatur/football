@@ -2,7 +2,6 @@ package com.football.converter;
 
 import com.football.domain.Match;
 import com.football.dto.MatchDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

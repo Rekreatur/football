@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -43,14 +44,14 @@ public class TeamsController {
     @ApiResponses(value = @io.swagger.annotations.ApiResponse(code = 200, message = "Выдача команды по её id прошла успешно"))
     @GetMapping(value = "/getone/{id}")
     public ApiResponse<TeamDto> getOne(@ApiParam(name = "team id", value = "id команды, которую необходимо найти") @PathVariable(name = "id") Long id) {
-        return new ApiResponse<>("The team issued successfully",Status.OK, teamService.getOne(id));
+        return new ApiResponse<>("The team issued successfully",Status.OK, teamService.getOne(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 
     @ApiOperation(value = "Выдача списка матчей команды", notes = "Выдаёт список всех матчей команды по указанному id", response = ApiResponse.class)
     @ApiResponses(value = @io.swagger.annotations.ApiResponse(code = 200, message = "Выдача списка матчей команды прошла успешно"))
     @GetMapping(value = "/matches/{id}")
     public ApiResponse<List<MatchDto>> getAllMatchesTeam(@ApiParam(name = "team id", value = "id команды, по которой нужно найти матчи") @PathVariable(name = "id") Long id) {
-        return new ApiResponse<>("List of all team matches successfully issued", Status.OK, matchService.findAllTeam(id));
+        return new ApiResponse<>("List of all team matches successfully issued", Status.OK, matchService.findAllTeam(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 
     @ApiOperation(value = "Добавление футбольной команды", notes = "Добавляет новую футбольную команду", response = ApiResponse.class)
@@ -65,13 +66,13 @@ public class TeamsController {
     @PutMapping(value = "/{id}")
     public ApiResponse<TeamDto> edit(@ApiParam(name = "team id", value = "id команды, которую необходимо изменить") @PathVariable(name = "id") Long id,
                         @ApiParam(name = "Team Entity", value = "Информация о команде, которую необходимо внести в изменения") @RequestBody @Valid TeamDto teamDto) {
-        return new ApiResponse<>("The team edited successfully", Status.OK, teamService.edit(id, teamDto));
+        return new ApiResponse<>("The team edited successfully", Status.OK, teamService.edit(id, teamDto).orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 
     @ApiOperation(value = "Удаление футбольной команды", notes = "Удаляет футбольную команду по указанному id", response = ApiResponse.class)
     @ApiResponses(value = @io.swagger.annotations.ApiResponse(code = 200, message = "Удаление команды прошло успешно"))
     @DeleteMapping(value = "/{id}")
     public ApiResponse<TeamDto> delete(@ApiParam(name = "team id", value = "id команды, которую необходимо удалить") @PathVariable(name = "id") Long id) {
-        return new ApiResponse<>("Delete successfully", Status.OK, teamService.delete(id));
+        return new ApiResponse<>("Delete successfully", Status.OK, teamService.delete(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 }
